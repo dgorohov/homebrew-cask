@@ -8,7 +8,7 @@ class Rsuuid < Formula
   depends_on "rust" => :build
 
   def install
-    system "cargo", "install", "--bin", "rsuuid", "--release", "--locked", "--root", prefix.to_s, "--path", "."
+    system "cargo", "install", "--bin", "rsuuid", "--locked", "--root", prefix.to_s, "--path", "."
   end
 
 end
