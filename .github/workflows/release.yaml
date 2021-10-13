@@ -1,0 +1,23 @@
+name: Build and upload bottles
+
+on:
+  push:
+    tags:
+      - '*'
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update Homebrew formula
+        uses: dawidd6/action-homebrew-bump-formula@v3
+        with:
+          token: ${{secrets.HOMEBREW_GITHUB_TOKEN}}
+          tap: dgorohov/home
+          formula: rsuuid
