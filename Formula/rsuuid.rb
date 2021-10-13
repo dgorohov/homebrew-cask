@@ -7,6 +7,10 @@ class Rsuuid < Formula
 
   depends_on "rust" => :build
 
+  bottle do
+    root_url "https://github.com/dgorohov/homebrew-home/releases/download/0.1.2"
+  end
+
   def install
     system "cargo", "install", "--bin", "rsuuid", "--locked", "--root", prefix.to_s, "--path", "."
   end
