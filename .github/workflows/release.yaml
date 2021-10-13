@@ -35,7 +35,7 @@ jobs:
       - name: Upload the bottle to the GitHub release
         uses: actions/upload-release-asset@v1.0.1
         env:
-          GH_PERSONAL_ACCESS_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./${{ matrix.artifact_name }}--${{ steps.vars.outputs.tag }}.catalina.bottle.1.tar.gz
