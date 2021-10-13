@@ -1,7 +1,7 @@
 class Rsuuid < Formula
   desc "UUID CLI generator"
   homepage "https://github.com/dgorohov/rsuuid"
-  url "https://github.com/dgorohov/homebrew-home.git", tag: "0.1.2", revision: "d01cf8364978a86249a42c00b8d3269b8ee7b048"
+  url "https://github.com/dgorohov/homebrew-home.git"
   sha256 "18925d551efb897e788d11f8e4ffac0e02c6c64c7f21aac1b8635ab7f38748a5"
   license "Apache-2.0"
 
