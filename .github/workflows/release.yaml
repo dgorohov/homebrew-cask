@@ -15,9 +15,44 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Update Homebrew formula
-        uses: dawidd6/action-homebrew-bump-formula@v3
+  upload_bottle:
+    name: Build and distribute Homebrew bottle for macOS Catalina
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+          - artifact_name: rsuuid
+            asset_name: rsuuid-macos-amd64
+            rust: stable
+    needs: [release]
+    steps:
+      - name: Build a bottle using Homebrew
+        run: |
+          brew tap dgorohov/home
+          brew install --build-bottle --verbose ${{ matrix.artifact_name }}
+          brew bottle ${{ matrix.artifact_name }}
+      - name: Upload the bottle to the GitHub release
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GH_PERSONAL_ACCESS_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
         with:
-          token: ${{secrets.HOMEBREW_GITHUB_TOKEN}}
-          tap: dgorohov/home
-          formula: rsuuid
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./${{ matrix.artifact_name }}--${{ github.event.release.tag_name }}.catalina.bottle.tar.gz
+          asset_name: ${{ matrix.artifact_name }}-${{ github.event.release.tag_name }}.catalina.bottle.tar.gz
+          asset_content_type: application/gzip
+
+  update_formula_bottle:
+    name: Update the Homebrew formula again with bottle
+    runs-on: ubuntu-latest
+    needs: [upload_bottle]
+    steps:
+      - uses: NSHipster/update-homebrew-formula-action@main
+        with:
+          repository: dgorohov/homebrew-home
+          tap: dgorohov/homebrew-home
+          formula: Formula/rsuuid.rb
+          message: |
+            Add bottle for hello ${{ github.event.release.tag_name }}
+            on macOS Catalina
+        env:
+          GH_PERSONAL_ACCESS_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
