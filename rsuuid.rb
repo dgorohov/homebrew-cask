@@ -1,6 +1,3 @@
-# Documentation: https://docs.brew.sh/Formula-Cookbook
-#                https://rubydoc.brew.sh/Formula
-# PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
 class Rsuuid < Formula
   desc "UUID CLI generator"
   homepage ""
@@ -10,7 +7,6 @@ class Rsuuid < Formula
 
   def install
     bin.install "rsuuid"
-    system "chmod", "+x", "#{bin}/rsuuid"
   end
 
 end
