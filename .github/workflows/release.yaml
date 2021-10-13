@@ -8,13 +8,6 @@ permissions:
   contents: write
 
 jobs:
-  release:
-    name: Build and Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
   upload_bottle:
     name: Build and distribute Homebrew bottle for macOS Catalina
     runs-on: macos-latest
@@ -24,19 +17,23 @@ jobs:
           - artifact_name: rsuuid
             asset_name: rsuuid-macos-amd64
             rust: stable
-    needs: [release]
     steps:
+      - name: Create Release
+        id: create_release
+        uses: shogo82148/actions-create-release@v1
+
       - name: Build a bottle using Homebrew
         run: |
           brew tap dgorohov/home
           brew install --build-bottle --verbose ${{ matrix.artifact_name }}
           brew bottle ${{ matrix.artifact_name }}
+
       - name: Upload the bottle to the GitHub release
         uses: actions/upload-release-asset@v1.0.1
         env:
           GH_PERSONAL_ACCESS_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./${{ matrix.artifact_name }}--${{ github.event.release.tag_name }}.catalina.bottle.tar.gz
           asset_name: ${{ matrix.artifact_name }}-${{ github.event.release.tag_name }}.catalina.bottle.tar.gz
           asset_content_type: application/gzip
